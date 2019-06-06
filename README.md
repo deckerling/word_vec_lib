@@ -3,7 +3,7 @@
 Notice that *word_vec_lib* is not a header-only library.
 
 ## Documentation
-*coming soon...*
+See the file "[DOCUMENTATION.md](https://github.com/deckerling/word_vec_lib/blob/master/DOCUMENTATION.md)".
 
 ## Example
 An [example program](example.cc) is provided, ready to get compiled, as well as some [example data](example/example_data/example_word_vecs.txt).
