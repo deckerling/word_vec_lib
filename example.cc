@@ -22,7 +22,7 @@ using namespace std;
 
 int main() {
 // Some example operations using the "wordVecLib.h" on the word vectors in
-// "example_word_vecs.txt".
+// "example_data/example_word_vecs.txt".
 
   // Create a "VecStore" (using the default parameters for "case_sensitive" and
   // "percentage").
@@ -96,7 +96,7 @@ int main() {
   // Create a "VecStore" using the customized parameters for "case_sensitive"
   // and "percentage" (all words will be handled without case sensitivity and
   // only the first 50% of the word vectors stored in the file
-  // ("example_word_vecs.txt") will be stored in our "VecStore");
+  // ("example_data/example_word_vecs.txt") will be stored in our "VecStore");
   VecStore my_vecs2("example_data/example_word_vecs.txt", false, 0.5);
 
   // Print basic information about the new "VecStore" we have just created.
@@ -114,22 +114,22 @@ int main() {
   // the "word" matching this pattern will be stored in the "VecSimTable"). In
   // this case all words ending with the German suffix "-haft" (or one of its
   // derivatives) will be stored.
-  VecSimTable vsm("example_data/example_word_vecs.txt", (regex) ".+[^(sc)-]haft(e([mnrs])?)?");
+  VecSimTable vst("example_data/example_word_vecs.txt", (regex) ".+[^(sc)-]haft(e([mnrs])?)?");
 
   // Print basic information about the "VecSimTable" we have created.
-  vsm.PrintInfo();
+  vst.PrintInfo();
 
   // Calculate the cosine similarity of 2 word vectors and the Euclidean
   // distance between them.
-  cosine_similarity = vsm.GetCosSim("grauenhaft", "grauenhafte");
-  euclidean_distance = vsm.GetEuclDist("grauenhaft", "grauenhafte");
+  cosine_similarity = vst.GetCosSim("grauenhaft", "grauenhafte");
+  euclidean_distance = vst.GetEuclDist("grauenhaft", "grauenhafte");
   cout << "The cosine similarity of \"grauenhaft\" and \"grauenhafte\" = " << cosine_similarity << '\n' << "The Euclidean distance between \"grauenhaft\" and \"grauenhafte\" = " << euclidean_distance << endl;
 
   cout << endl;
 
   // Finds the 3 most similar pairs to the pair "grauenhaft"/"grauenhafte" with
   // respect to their cosine similarity.
-  WordPairList most_similar_pairs = vsm.MostSimilarPairs("grauenhaft", "grauenhafte", "cos_sim", 3); // the type "WordPairList" equals "std::list<std::pair<std::pair<std::string, std::string>, double>>"
+  WordPairList most_similar_pairs = vst.MostSimilarPairs("grauenhaft", "grauenhafte", "cos_sim", 3); // the type "WordPairList" equals "std::list<std::pair<std::pair<std::string, std::string>, double>>"
   cout << "The three most similar word pairs to the word pair \"grauenhaft\" / \"grauenhafte\" are:" << '\n';
   PrintWordPairList(most_similar_pairs);
 
@@ -138,31 +138,31 @@ int main() {
   // Finds the most similar pair to all the word pairs in "most_similar_pairs"
   // with respect to their cosine similarity.
   for (auto word_pair_with_value : most_similar_pairs)
-    PrintWordPair((vsm.MostSimilarPairs(word_pair_with_value.first, "cos_sim", 1)).front());
+    PrintWordPair((vst.MostSimilarPairs(word_pair_with_value.first, "cos_sim", 1)).front());
 
   cout << endl;
 
   // Finds similar pairs in a range of 0.1 to the pair "grauenhaft"/
   // "grauenhafte" with respect to their Euclidean distance.
   cout << "All pairs with a Euclidean distance +/-0.1 to the Euclidean distance of the word pair \"grauenhaft\" / \"grauenhafte\" are:" << '\n';
-  WordPairList similar_pairs_in_range = vsm.SimilarPairs("grauenhaft", "grauenhafte", "eucl_dist", 0.1);
+  WordPairList similar_pairs_in_range = vst.SimilarPairs("grauenhaft", "grauenhafte", "eucl_dist", 0.1);
   PrintWordPairList(similar_pairs_in_range);
 
   cout << endl;
 
   // Create a "VecSimTable" (using the case sensitivity and storing 100% of the
   // word vectors in the file (no regex pattern is used)).
-  VecSimTable vsm2("example_data/example_word_vecs.txt", true, 1);
+  VecSimTable vst2("example_data/example_word_vecs.txt", true, 1);
 
   // Print basic information about the "VecSimTable" we have created.
-  vsm2.PrintInfo();
+  vst2.PrintInfo();
 
   // Examples regarding a word vector that does not exist in "vsm2".
   cout << "Examples regarding a word vector that does not exist in our \"VecSimTable\":" << '\n';
-  cosine_similarity = vsm2.GetEuclDist("Frau", "Hund"); // "Frau" is stored, "Hund" is not
+  cosine_similarity = vst2.GetEuclDist("Frau", "Hund"); // "Frau" is stored, "Hund" is not
   cout << cosine_similarity << endl;
-  PrintWordPairList(vsm2.SimilarPairs("Frau", "Hund", "eucl_dist", 0.07));
-  PrintWordPairList(vsm2.MostSimilarPairs("Hund", "Frau", "cos_sim", 4));
+  PrintWordPairList(vst2.SimilarPairs("Frau", "Hund", "eucl_dist", 0.07));
+  PrintWordPairList(vst2.MostSimilarPairs("Hund", "Frau", "cos_sim", 4));
 
   return 0;
 }
