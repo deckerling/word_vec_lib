@@ -190,6 +190,9 @@ void VecSimTable::PrintInfo() {
 }
 
 std::vector<double> VecSimTable::GetVec(std::string word) {
+// Given a word (std::string) this method returns the corresponding vector if
+// the word and its vector are stored in the "VecSimTable" object; if not, an
+// empty vector will be returned, and an error message will be printed.
   const int index(GetIndex(word));
   if (index < 0) {
     std::cout << "ERROR in GetVec(): \"" << word << "\" couldn't be found in your data; returned an empty vector." << std::endl;
@@ -200,7 +203,7 @@ std::vector<double> VecSimTable::GetVec(std::string word) {
 
 double VecSimTable::GetCosSim(std::string word0, std::string word1) {
 // Searches for the cosine similarity of a word pair ("word0", "word1") in the
-// sim_table_ and returnes it.
+// sim_table_ and returns it.
   if (!case_sensitive_) {
     word0 = VecStore::SetToLowerCase(word0);
     word1 = VecStore::SetToLowerCase(word1);
@@ -208,13 +211,13 @@ double VecSimTable::GetCosSim(std::string word0, std::string word1) {
   if (word0 == word1) return 1;
   const int i(GetIndex(word0));
   if (i == -1) {
-    std::cout << "ERROR in GetCosSim(): \"" << word0 << "\" couldn't be found, 0 returned." << std::endl;
-    return 0;
+    std::cout << "ERROR in GetCosSim(): \"" << word0 << "\" couldn't be found." << std::endl;
+    return std::numeric_limits<double>::quiet_NaN();
   }
   const int j(GetIndex(word1));
   if (j == -1) {
-    std::cout << "ERROR in GetCosSim(): \"" << word1 << "\" couldn't be found, 0 returned." << std::endl;
-    return 0;
+    std::cout << "ERROR in GetCosSim(): \"" << word1 << "\" couldn't be found." << std::endl;
+    return std::numeric_limits<double>::quiet_NaN();
   }
   const std::pair<int, int> sim_table_indices(GetSimTableIndices(i, j));
   return sim_table_[sim_table_indices.first][sim_table_indices.second]->cos_sim;
@@ -222,7 +225,7 @@ double VecSimTable::GetCosSim(std::string word0, std::string word1) {
 
 double VecSimTable::GetEuclDist(std::string word0, std::string word1) {
 // Searches for the Euclidean distance between two word vectors (of "word0",
-// "word1") in the sim_table_ and returnes it.
+// "word1") in the sim_table_ and returns it.
   if (!case_sensitive_) {
     word0 = VecStore::SetToLowerCase(word0);
     word1 = VecStore::SetToLowerCase(word1);
@@ -231,12 +234,12 @@ double VecSimTable::GetEuclDist(std::string word0, std::string word1) {
   const int i(GetIndex(word0));
   if (i < 0) {
     std::cout << "ERROR in GetEuclDist(): \"" << word0 << "\" couldn't be found." << std::endl;
-    return std::numeric_limits<double>::quiet_NaN();;
+    return std::numeric_limits<double>::quiet_NaN();
   }
   const int j(GetIndex(word1));
   if (j < 0) {
     std::cout << "ERROR in GetEuclDist(): \"" << word1 << "\" couldn't be found." << std::endl;
-    return std::numeric_limits<double>::quiet_NaN();;
+    return std::numeric_limits<double>::quiet_NaN();
   }
   const std::pair<int, int> sim_table_indices(GetSimTableIndices(i, j));
   return sim_table_[sim_table_indices.first][sim_table_indices.second]->eucl_dist;
