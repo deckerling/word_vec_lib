@@ -18,7 +18,8 @@
 
 #include "word_vec_lib.h"
 
-void VecPrint::PrintVec(const std::vector<double>& vec) {
+template <typename T>
+void VecPrint::PrintVec(const std::vector<T>& vec) {
 // Prints all elements of a vector (separated by whitespaces).
   if (vec.empty()) {
     std::cout << "[]" << std::endl;
@@ -47,10 +48,10 @@ void VecPrint::PrintWordVecList(std::list<WordVec*> wv_list) {
     std::cout << "NULL" << std::endl;
     return;
   }
-  std::cout << "--- BEGIN WordVec List: ---" << '\n';
+  std::cout << "--- BEGIN WordVecList: ---" << '\n';
   for (auto wv : wv_list)
     PrintWordVec(wv);
-  std::cout << "--- END WordVec List.   ---" << std::endl;
+  std::cout << "--- END WordVecList.   ---" << std::endl;
 }
 
 void VecPrint::PrintWordPair(const std::pair<std::pair<std::string, std::string>, double>& word_pair) {
@@ -64,10 +65,10 @@ void VecPrint::PrintWordPairList(const std::list<std::pair<std::pair<std::string
     std::cout << "NULL" << std::endl;
     return;
   }
-  std::cout << "--- BEGIN WordPair List: ---" << '\n';
+  std::cout << "--- BEGIN WordPairList: ---" << '\n';
   for (auto& word_pair : word_pair_list)
     PrintWordPair(word_pair);
-  std::cout << "--- END WordPair List.   ---" << std::endl;
+  std::cout << "--- END WordPairList.   ---" << std::endl;
 }
 
 std::vector<double> VecCalc::Add(const std::list<WordVec*> wvs) {
