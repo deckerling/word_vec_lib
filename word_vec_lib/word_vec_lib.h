@@ -35,7 +35,8 @@ struct WordVec { // word vector
 
 namespace VecPrint {
 // Functions to print (word) vectors and word pairs.
-  void PrintVec(const std::vector<double>& vec);
+  template <typename T>
+  void PrintVec(const std::vector<T>& vec);
   void PrintWordVec(const WordVec* wv);
   void PrintWordVecList(std::list<WordVec*> wv_list);
   void PrintWordPair(const std::pair<std::pair<std::string, std::string>, double>& word_pair);
@@ -46,9 +47,9 @@ namespace VecCalc {
 // Functions to perform mathematical operations on (word) vectors.
 
   template <typename T>
-  T EuclideanNorm(const std::vector<T>& vec) {
-    // Calculates and returns the Euclidean norm of "vec" (needed in order to
-    // calculate the cosine similarity).
+  double EuclideanNorm(const std::vector<T>& vec) {
+  // Calculates and returns the Euclidean norm of "vec" (needed in order to
+  // calculate the cosine similarity).
     T x(0);
     for (auto& element : vec)
       x += std::pow(element, 2);
@@ -56,20 +57,20 @@ namespace VecCalc {
   }
 
   template <typename T>
-  T CosineSimilarity(const std::vector<T> vec0, const std::vector<T> vec1) {
+  double CosineSimilarity(const std::vector<T> vec0, const std::vector<T> vec1) {
   // Calculates and returns the cosine similarity of "vec0" and "vec1".
     return (std::inner_product(vec0.begin(), vec0.end(), vec1.begin(), 0.)/(EuclideanNorm(vec0)*EuclideanNorm(vec1)));
   }
 
   template <typename T>
-  T CosineSimilarity(const WordVec* wv0, const WordVec* wv1) {
+  double CosineSimilarity(const WordVec* wv0, const WordVec* wv1) {
   // Calculates and returns the cosine similarity of two (word) vectors given the
   // "WordVec"s.
     return CosineSimilarity(wv0->vec, wv1->vec);
   }
 
   template <typename T>
-  T EuclideanDistance(const std::vector<T> vec0, const std::vector<T> vec1) {
+  double EuclideanDistance(const std::vector<T> vec0, const std::vector<T> vec1) {
   // Calculates and returns the Euclidean distance between "vec0" and "vec1".
     T x(0);
     for (unsigned i = 0; i < vec0.size(); ++i)
@@ -78,7 +79,7 @@ namespace VecCalc {
   }
 
   template <typename T>
-  T EuclideanDistance(const WordVec* wv0, const WordVec* wv1) {
+  double EuclideanDistance(const WordVec* wv0, const WordVec* wv1) {
   // Calculates and returns the Euclidean distance between two (word) vectors
   // given the "WordVec"s.
     return EuclideanDistance(wv0->vec, wv1->vec);
@@ -118,21 +119,21 @@ namespace VecCalc {
   std::vector<double> Add(const std::list<WordVec*> wvs);
 
   template <typename T>
-  std::vector<T> Subtract(std::vector<T> minuend_vec, const std::vector<T> substrahend_vec) {
+  std::vector<T> Subtract(std::vector<T> minuend_vec, const std::vector<T> subtrahend_vec) {
   // Subtracts the second given vector from a first one and returns the
   // resulting vector. If both vectors do not got the same size an empty vector
   // will be returned.
-    if (minuend_vec.size() != substrahend_vec.size())
+    if (minuend_vec.size() != subtrahend_vec.size())
       return std::vector<T>();
-    std::transform(minuend_vec.begin(), minuend_vec.end(), substrahend_vec.begin(), minuend_vec.begin(), std::minus<T>());
+    std::transform(minuend_vec.begin(), minuend_vec.end(), subtrahend_vec.begin(), minuend_vec.begin(), std::minus<T>());
     return minuend_vec;
   }
 
   template <typename T>
-  std::vector<T> Subtract(const WordVec* minuend_wv, const WordVec* substrahend_wv) {
+  std::vector<T> Subtract(const WordVec* minuend_wv, const WordVec* subtrahend_wv) {
   // Given two "WordVec"s the second given vector will be subtracted from a
   // first one and returns the resulting vector.
-    return Subtract(minuend_wv->vec, substrahend_wv->vec);
+    return Subtract(minuend_wv->vec, subtrahend_wv->vec);
   }
 
   template <typename T>
@@ -207,13 +208,13 @@ class VecStore {
     return VecCalc::Add(GetVec(word0), GetVec(word1));
   }
 
-  std::vector<double> Subtract(std::string minuend_word, std::string substrahend_word) {
+  std::vector<double> Subtract(std::string minuend_word, std::string subtrahend_word) {
   // Subtracts two (word) vectors given the "words".
     if (!case_sensitive_) {
       SetToLowerCase(minuend_word);
-      SetToLowerCase(substrahend_word);
+      SetToLowerCase(subtrahend_word);
     }
-    return VecCalc::Subtract(GetVec(minuend_word), GetVec(substrahend_word));
+    return VecCalc::Subtract(GetVec(minuend_word), GetVec(subtrahend_word));
   }
 
   WordVec* ClosestWordVec(std::string word) {
