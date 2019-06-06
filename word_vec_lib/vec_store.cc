@@ -185,7 +185,7 @@ double VecStore::GetSimilarity(const std::vector<std::string>& words, std::strin
 // Starts searching for the word vectors corresponding to the "words" by
 // passing the "words" to "GetVector()". If a word cannot be found in the
 // "hash_table_", "GetVector()" returns an empty vector. If so, the
-// method stops by returning 0 and printing an error message. If both word
+// method stops by returning NaN and printing an error message. If both word
 // vectors are found, their cosine similarity or Euclidean distance will be
 // returned (depending on the "comparison_mode"; by default it is the cosine
 // similarity).
@@ -193,8 +193,8 @@ double VecStore::GetSimilarity(const std::vector<std::string>& words, std::strin
   for (unsigned i = 0; i < words.size(); ++i) {
     vectors[i] = GetVec(words[i]);
     if (vectors[i].empty()) {
-      std::cout << "ERROR in GetSimilarity(): \"" << words[i] << "\" couldn't be found, 0 returned." << std::endl;
-      return 0;
+      std::cout << "ERROR in GetSimilarity(): \"" << words[i] << "\" couldn't be found." << std::endl;
+      return std::numeric_limits<double>::quiet_NaN();
     }
   }
   if (std::regex_match(SetToLowerCase(comparison_mode), (std::regex) "eucl(idean)?([ _-])?dist(ance)?"))
@@ -205,7 +205,7 @@ double VecStore::GetSimilarity(const std::vector<std::string>& words, std::strin
 
 std::vector<double> VecStore::GetVec(std::string word) {
 // Given a word (std::string) this method returns the corresponding vector if
-// the word and its vector are stored in the "HashTableOnMemory"; if not, an
+// the word and its vector are stored in the "VecStore" object; if not, an
 // empty vector will be returned, and an error message will be printed.
   if (!case_sensitive_)
     word = SetToLowerCase(word);
